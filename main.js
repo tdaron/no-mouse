@@ -25,13 +25,17 @@
         counter++;
         return result;
     }
-    
+    // Function to check if element is visible in the viewport
+    const isVisible = (el) => {
+        const rect = el.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
+    };
     // Function to initialize each leaf node by changing the first two characters
     function initializeLeafNodes() {
         const allElements = document.querySelectorAll('*');
 
         allElements.forEach(e => {
-            if ((e.getAttribute('onclick')!=null)||(e.getAttribute('href')!=null)||(e.tagName == "BUTTON")) { // Only clickable nodes
+            if (isVisible(e) && ((e.getAttribute('onclick')!=null)||(e.getAttribute('href')!=null)||(e.tagName == "BUTTON"))) { // Only clickable nodes
                 if (e.tagName == "DIV") {
                     return;
                 }
@@ -44,7 +48,7 @@
                 newDiv.style = "font-weight: bold; color: blue;"
                 e.prepend(newDiv)
             }            
-            if (e.tagName == "INPUT" && e.type == "text") {
+            if (e.tagName == "INPUT" && e.type == "text" && isVisible(e)) {
                 elements.push(e);
                 const prefix = get_prefix();
                 e.dataset.originalPH = e.placeholder;
