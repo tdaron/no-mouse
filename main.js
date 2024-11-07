@@ -2,7 +2,7 @@
 // @name         No-Mouse web
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  Modify the first two characters of each leaf node on Ctrl+I and restore text on match
+// @description  Adds two chars anchors to every interactive element of the page. Shortcut: Ctrl+<
 // @match        *://*/*
 // @grant        none
 // ==/UserScript==
