@@ -10,12 +10,19 @@
 (function() {
     'use strict';
     let elements = [];
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let counter = 0; // to count the sequence AA, AB etc
+
     function get_prefix(length = 2) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let result = '';
+        let tempCounter = counter;
+
         for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
+            result = characters.charAt(tempCounter % characters.length) + result;
+            tempCounter = Math.floor(tempCounter / characters.length);
         }
+        counter++;
         return result;
     }
     
@@ -70,8 +77,9 @@
     let typedSequence = '';
     let active = false;
     document.addEventListener('keydown', (event) => {
-        if (event.ctrlKey && event.key === '<' && !active) {
+        if (event.ctrlKey && event.altKey && !active) {
             event.preventDefault();
+            counter = 0; // reset to reuse AA, AB next call
             typedSequence = '';
             active = true;
             initializeLeafNodes();
@@ -81,8 +89,9 @@
             return;
         }
 
-        if (event.key == "Escape") {
+        if (event.key == "Escape" || (event.ctrlKey && event.altKey)) {
             resetNodes();
+
             typedSequence = "";
             active = false;
             return;
