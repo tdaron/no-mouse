@@ -25,11 +25,20 @@
         counter++;
         return result;
     }
-    // Function to check if element is visible in the viewport
-    const isVisible = (el) => {
-        const rect = el.getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth;
-    };
+    // Function to check if an element is visible
+    function isVisible(element) {
+        const style = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+
+        // Check if element has non-zero dimensions and is within the viewport
+        return (rect.width > 1 && rect.height > 1 &&
+                style.display !== 'none' &&
+                style.visibility !== 'hidden' &&
+                style.opacity !== '0' &&
+                rect.top >= 0 && rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+    }
     // Function to initialize each leaf node by changing the first two characters
     function initializeLeafNodes() {
         const allElements = document.querySelectorAll('*');
