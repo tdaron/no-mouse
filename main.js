@@ -10,21 +10,41 @@
 (function() {
     'use strict';
     let elements = [];
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let counter = 0; // to count the sequence AA, AB etc
+
     function get_prefix(length = 2) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let result = '';
+        let tempCounter = counter;
+
         for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
+            result = characters.charAt(tempCounter % characters.length) + result;
+            tempCounter = Math.floor(tempCounter / characters.length);
         }
+        counter++;
         return result;
     }
-    
+    // Function to check if an element is visible
+    function isVisible(element) {
+        const style = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+
+        // Check if element has non-zero dimensions and is within the viewport
+        return (rect.width > 1 && rect.height > 1 &&
+                style.display !== 'none' &&
+                style.visibility !== 'hidden' &&
+                style.opacity !== '0' &&
+                rect.top >= 0 && rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+    }
     // Function to initialize each leaf node by changing the first two characters
     function initializeLeafNodes() {
         const allElements = document.querySelectorAll('*');
 
         allElements.forEach(e => {
-            if ((e.getAttribute('onclick')!=null)||(e.getAttribute('href')!=null)||(e.tagName == "BUTTON")) { // Only clickable nodes
+            if (isVisible(e) && ((e.getAttribute('onclick')!=null)||(e.getAttribute('href')!=null)||(e.tagName == "BUTTON"))) { // Only clickable nodes
                 if (e.tagName == "DIV") {
                     return;
                 }
@@ -37,7 +57,7 @@
                 newDiv.style = "font-weight: bold; color: blue;"
                 e.prepend(newDiv)
             }            
-            if (e.tagName == "INPUT" && e.type == "text") {
+            if (e.tagName == "INPUT" && e.type == "text" && isVisible(e)) {
                 elements.push(e);
                 const prefix = get_prefix();
                 e.dataset.originalPH = e.placeholder;
@@ -70,8 +90,9 @@
     let typedSequence = '';
     let active = false;
     document.addEventListener('keydown', (event) => {
-        if (event.ctrlKey && event.key === '<' && !active) {
+        if (event.ctrlKey && event.altKey && !active) {
             event.preventDefault();
+            counter = 0; // reset to reuse AA, AB next call
             typedSequence = '';
             active = true;
             initializeLeafNodes();
@@ -81,8 +102,9 @@
             return;
         }
 
-        if (event.key == "Escape") {
+        if (event.key == "Escape" || (event.ctrlKey && event.altKey)) {
             resetNodes();
+
             typedSequence = "";
             active = false;
             return;
