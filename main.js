@@ -4,6 +4,8 @@
 // @version      1.0
 // @description  Adds two chars anchors to every interactive element of the page. Shortcut: Ctrl+<
 // @match        *://*/*
+// @updateURL    https://raw.githubusercontent.com/tdaron/no-mouse/refs/heads/main/main.js
+// @downloadURL  https://raw.githubusercontent.com/tdaron/no-mouse/refs/heads/main/main.js
 // @grant        none
 // ==/UserScript==
 
